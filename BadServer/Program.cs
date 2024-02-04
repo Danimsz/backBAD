@@ -1,0 +1,82 @@
+
+using BadServer.DataBase;
+
+namespace BadServer
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            //añade la dependencia de los controladores
+
+            builder.Services.AddControllers();
+
+            //Agrega el servicio API Explorer al proyecto.
+            //Esto permite explorar y documentar los puntos finales
+            //(los endpoints) de la API de una manera más sencilla
+            //también es utilizado por Swagger/OpenAPI  
+            // Más info https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();///swagger es un estandar que da una interfaz grafica en la pagina web que de manera grafica puedes probar tus distintos endpoint
+
+            builder.Services.AddScoped<MyDbContext>();
+
+            //añadimos el dbcontext al servicio de ingeccion de indepemdencia
+            //Tiene que ser scope para que cierre la conexion y limpie
+            //Los recursos tras cada peticion
+            builder.Services.AddScoped<MyDbContext>();
+
+            var app = builder.Build();//construyo la aplicaicon 
+
+            //Creamos un scope y nos aseguramos de que se crea la base de dato
+            //Segun tengamos configurado nuestro dbContentx
+            //Pagina 38 Pdf ASP.NET y nos falta los endpoint del controller
+            using (IServiceScope scope = app.Services.CreateScope())
+                
+            {
+                MyDbContext dbContext = scope.ServiceProvider.GetService<MyDbContext>();
+               dbContext.Database.EnsureCreated();
+
+            }
+
+            // Verifica si la aplicación se está ejecutando.
+            // en un entorno de desarollo. Si es así se activa
+            // la visualización de Swagger y su interfaz de usuario
+            // (la pagina esta donde pone get y tal para hacer las llamadas)
+            // En un entorno de producción, esta sección en principio se omite
+            // la documentación de la API publicamente.
+
+            //si la aplicacion esta en una version desarrollo quiero que se meustre el swagger
+            //pq una version publica en produccion das informacion y la pueden ver 
+            //Por eso viene de forma predeterminada en este if
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+
+            //Configura la redireccion HTTP a HTTPS
+            //Esto redirige todas las solicitudes HTTP
+            // a sus  equivalente HTTPS para mejorar la seguridad
+
+            //configura la redireccion de hhtp a https
+            app.UseHttpsRedirection();
+
+            //Configura el middleware de autorizacion
+            // Lo que indica que la aplicacion esta habilitada
+            //Para usar sistemas de autenticaciom y autorizacion
+
+            app.UseAuthorization();
+
+            //Configura la aplicacion para que utilize
+            //Los controladores que se registraon anterionmente
+            //PAra manejar las solicitudes  HTTP entrantes 
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}
