@@ -47,8 +47,10 @@ namespace BadServer.Controllers
                     return BadRequest("El nombre de usuario ya existe");
                 }
 
-                // Se crea el nuevo usuario, compruebalo bien Benito
-                var newUser = new Cliente
+            //hasheamos la contraseña.
+            var hashedPassword = PasswordHelper.Hash(registerDto.Password);
+            // Se crea el nuevo usuario, compruebalo bien Benito
+            var newUser = new Cliente
                 {
                     UserName = registerDto.UserName,
                     Password = registerDto.Password,
