@@ -48,12 +48,13 @@ namespace BadServer.Controllers
                 }
 
             //hasheamos la contraseña.
-            var hashedPassword = PasswordHelper.Hash(registerDto.Password);
+            //var hashedPassword = PasswordHelper.Hash(registerDto.Password);
             // Se crea el nuevo usuario, compruebalo bien Benito
             var newUser = new Cliente
                 {
                     UserName = registerDto.UserName,
-                    Password = registerDto.Password,
+                    //Hasheamos la contraseña
+                    Password = PasswordHelper.Hash(registerDto.Password),//registerDto.Password,
                     Email = registerDto.Email,
                     Address = registerDto.Address,
                     Rol = "Usuario" // Esto ultimo me dijo Amanda que lo añadiera

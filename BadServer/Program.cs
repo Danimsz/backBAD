@@ -13,6 +13,20 @@ namespace BadServer
 
             builder.Services.AddControllers();
 
+            //Habilitamos CORS para enlazar front con back en localhost
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddCors(options =>
+                {
+                    options.AddDefaultPolicy(builder =>
+                    {
+                        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+                });
+            }
+
             //Agrega el servicio API Explorer al proyecto.
             //Esto permite explorar y documentar los puntos finales
             //(los endpoints) de la API de una manera más sencilla
@@ -55,6 +69,9 @@ namespace BadServer
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                //Permite CORS
+                app.UseCors();
             }
 
 
