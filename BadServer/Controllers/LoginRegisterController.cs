@@ -2,6 +2,7 @@ using BadServer.DataBase;
 using BadServer.DataBase.Dto;
 using BadServer.DataBase.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -19,11 +20,11 @@ namespace BadServer.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             
                 // Aqui mira a ver si los datos del usuario son correctos para el incio de sesion
-                var user = _dbContext.Cliente.FirstOrDefault(u => u.UserName == loginDto.UserName && u.Password == loginDto.Password);
+                var user = await _dbContext.Cliente.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == loginDto.Password);
                 
                 // Control por si el usuario y la contraseña no coinciden
                 if (user == null)
@@ -36,12 +37,12 @@ namespace BadServer.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register([FromBody] RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             
                 // A benito le da error aqui
                 // Aqui se comprueba si el usuario ya existe para no crearlo
-                if (_dbContext.Cliente.Any(u => u.UserName == registerDto.UserName))
+                if (await _dbContext.Cliente.AnyAsync(u => u.UserName == registerDto.UserName))
                 {
                     return BadRequest("El nombre de usuario ya existe");
                 }
@@ -57,7 +58,7 @@ namespace BadServer.Controllers
                 };
 
                 _dbContext.Cliente.Add(newUser);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
 
                 return Ok("El usuario se ha registrado");
             
