@@ -39,6 +39,7 @@ namespace BadServer.Controllers
         public IActionResult Register([FromBody] RegisterDto registerDto)
         {
             
+                // A benito le da error aqui
                 // Aqui se comprueba si el usuario ya existe para no crearlo
                 if (_dbContext.Cliente.Any(u => u.UserName == registerDto.UserName))
                 {
