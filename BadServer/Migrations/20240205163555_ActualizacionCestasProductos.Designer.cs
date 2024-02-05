@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadServer.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240205002113_ActualizacionClienteRol3")]
-    partial class ActualizacionClienteRol3
+    [Migration("20240205163555_ActualizacionCestasProductos")]
+    partial class ActualizacionCestasProductos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

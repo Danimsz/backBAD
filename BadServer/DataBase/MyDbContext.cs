@@ -9,7 +9,10 @@ namespace BadServer.DataBase
         private const string DATABASE_PATH = "badinfluence.db";
 
         //Tablas 
-        public DbSet<Cliente> Cliente { get; set; } 
+        public DbSet<Cliente> Clientes { get; set; } 
+        public DbSet<Producto> Productos { get; set; }
+        public DbSet<Cesta> Cestas { get; set; }
+        public DbSet<CestaProducto> cestaProductos { get; set; }
 
 
         //Configura Entity Framework para crear un archivo de base de dato sqlite

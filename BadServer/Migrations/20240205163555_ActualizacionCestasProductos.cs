@@ -5,7 +5,7 @@
 namespace BadServer.Migrations
 {
     /// <inheritdoc />
-    public partial class ActualizacionClienteRol3 : Migration
+    public partial class ActualizacionCestasProductos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

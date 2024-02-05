@@ -26,7 +26,7 @@ namespace BadServer.Controllers
             var hashedPassword = PasswordHelper.Hash(loginDto.Password);
 
             // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
-            var user = await _dbContext.Cliente.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
+            var user = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
 
             // Control por si el usuario y la contraseña no coinciden
             if (user == null)
@@ -42,7 +42,7 @@ namespace BadServer.Controllers
             
                 // A benito le da error aqui
                 // Aqui se comprueba si el usuario ya existe para no crearlo
-                if (await _dbContext.Cliente.AnyAsync(u => u.UserName == registerDto.UserName))
+                if (await _dbContext.Clientes.AnyAsync(u => u.UserName == registerDto.UserName))
                 {
                     return BadRequest("El nombre de usuario ya existe");
                 }
@@ -60,7 +60,7 @@ namespace BadServer.Controllers
                     Rol = "Usuario" // Esto ultimo me dijo Amanda que lo añadiera
                 };
 
-                _dbContext.Cliente.Add(newUser);
+                _dbContext.Clientes.Add(newUser);
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("El usuario se ha registrado");

@@ -9,10 +9,9 @@ namespace BadServer.DataBase.Entities
         public int Cantidad { get; set; }
         public string Modelo { get; set; }
         public string Descripcion { get; set; }
-        public SqlMoney Precio { get; set; }
+        public double Precio { get; set; }
         public int Imagen { get; set; }
         public string UrlImagen { get; set; }
-
-
+        public ICollection<CestaProducto> CestaProductos { get; set; }
     }
 }
