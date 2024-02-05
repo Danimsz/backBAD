@@ -22,20 +22,20 @@ namespace BadServer.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            
-                // Aqui mira a ver si los datos del usuario son correctos para el incio de sesion
-                var user = await _dbContext.Cliente.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == loginDto.Password);
-                
-                // Control por si el usuario y la contraseña no coinciden
-                if (user == null)
-                {
-                    return Unauthorized("Usuario o contraseña incorrectos");
-                }
+            // Hashea la contraseña proporcionada
+            var hashedPassword = PasswordHelper.Hash(loginDto.Password);
 
-               
-                return Ok("Sesion iniciada correctamente");
+            // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
+            var user = await _dbContext.Cliente.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
+
+            // Control por si el usuario y la contraseña no coinciden
+            if (user == null)
+            {
+                return Unauthorized("Usuario o contraseña incorrectos");
+            }
+
+            return Ok("Sesion iniciada correctamente");
         }
-
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
