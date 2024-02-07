@@ -34,7 +34,7 @@ namespace BadServer.Controllers
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            return Ok("Sesion iniciada correctamente");
+            return Ok("Sesion iniciada correctamente");//el token
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
