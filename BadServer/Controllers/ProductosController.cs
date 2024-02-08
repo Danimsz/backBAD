@@ -36,8 +36,8 @@ namespace BadServer.Controllers
             return Ok(productos);
         }
 
-
-        [HttpPut("{cestaId}/añadir")]
+        
+        [HttpPost("{cestaId}/añadir")]
         public async Task<IActionResult> AgregarProductosCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
         {
             //Comprobamos si el producto existe en la tabla productos
@@ -72,7 +72,7 @@ namespace BadServer.Controllers
         }
 
 
-        [HttpPut("{cestaId}/quitar")]
+        [HttpDelete("{cestaId}/quitar")]
         public async Task<IActionResult> QuitarProductosCesta(int cestaId, [FromBody] QuitarProductoDto quitarProductoDto)
         {
             //Comprobamos si el producto existe en la cesta
