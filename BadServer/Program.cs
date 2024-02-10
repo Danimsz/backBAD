@@ -1,5 +1,7 @@
 
 using BadServer.DataBase;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BadServer
 {
@@ -86,7 +88,35 @@ namespace BadServer
             // Lo que indica que la aplicacion esta habilitada
             //Para usar sistemas de autenticaciom y autorizacion
 
+            //habilita la autenticacion
+            app.UseAuthentication();
+         
+            //habilita la autiorizacion
             app.UseAuthorization();
+
+
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    //Por seguirdad guardamos la clave privada en la variable de entorno
+                    ////La clave debe tener mas de 256 bits
+                    string key = Environment.GetEnvironmentVariable("JWT_KEY");
+
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+
+                        //Si no nos importa que se valide el emisor del token, lo desactivamos
+                        ValidateIssuer = false,
+                        ///Si no nos imporata que se valida para quien o 
+                        ///para que proposito esta destinado el token,lo desactivamos 
+                        ValidateAudience = false,
+                        //Indicamos la clave
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    };
+                });
+                
+                
+                
 
             //Configura la aplicacion para que utilize
             //Los controladores que se registraon anterionmente
