@@ -44,6 +44,26 @@ namespace BadServer
             //Los recursos tras cada peticion
             builder.Services.AddScoped<MyDbContext>();
 
+            builder.Services.AddAuthentication()
+             .AddJwtBearer(options =>
+             {
+                 //Por seguirdad guardamos la clave privada en la variable de entorno
+                 ////La clave debe tener mas de 256 bits
+                 string key = Environment.GetEnvironmentVariable("JWT_KEY");
+
+                 options.TokenValidationParameters = new TokenValidationParameters()
+                 {
+
+                     //Si no nos importa que se valide el emisor del token, lo desactivamos
+                     ValidateIssuer = false,
+                     ///Si no nos imporata que se valida para quien o 
+                     ///para que proposito esta destinado el token,lo desactivamos 
+                     ValidateAudience = false,
+                     //Indicamos la clave
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                 };
+             });
+
             var app = builder.Build();//construyo la aplicaicon 
 
             //Creamos un scope y nos aseguramos de que se crea la base de dato
@@ -93,30 +113,6 @@ namespace BadServer
          
             //habilita la autiorizacion
             app.UseAuthorization();
-
-
-            builder.Services.AddAuthentication()
-                .AddJwtBearer(options =>
-                {
-                    //Por seguirdad guardamos la clave privada en la variable de entorno
-                    ////La clave debe tener mas de 256 bits
-                    string key = Environment.GetEnvironmentVariable("JWT_KEY");
-
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-
-                        //Si no nos importa que se valide el emisor del token, lo desactivamos
-                        ValidateIssuer = false,
-                        ///Si no nos imporata que se valida para quien o 
-                        ///para que proposito esta destinado el token,lo desactivamos 
-                        ValidateAudience = false,
-                        //Indicamos la clave
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-                    };
-                });
-                
-                
-                
 
             //Configura la aplicacion para que utilize
             //Los controladores que se registraon anterionmente

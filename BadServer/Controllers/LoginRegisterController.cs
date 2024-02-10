@@ -1,9 +1,13 @@
 using BadServer.DataBase;
 using BadServer.DataBase.Dto;
 using BadServer.DataBase.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
 namespace BadServer.Controllers
@@ -14,9 +18,15 @@ namespace BadServer.Controllers
     {
         private readonly MyDbContext _dbContext;
 
-        public LoginRegisterController(MyDbContext dbContext)
+        //Obtenemos por inyeccion los parametros preestablecidos para crear los token
+        private readonly TokenValidationParameters _tokenParameters;
+
+
+        public LoginRegisterController(IOptionsMonitor<JwtBearerOptions> jwtOptions, MyDbContext dbContext)
         {
             _dbContext = dbContext;
+            _tokenParameters = jwtOptions.Get(JwtBearerDefaults.AuthenticationScheme)
+                .TokenValidationParameters;
         }
 
         [HttpPost("Login")]
@@ -28,14 +38,39 @@ namespace BadServer.Controllers
             // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
             var user = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
 
+            
+
             // Control por si el usuario y la contraseña no coinciden
             if (user == null)
             {
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            return Ok("Sesion iniciada correctamente");//el token
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                //Aqui añadimos los datos que sirvan para autorizrr al usuario
+                Claims = new Dictionary<string, object>
+                {
+                    { "id", Guid.NewGuid().ToString() }
+
+                },
+                //Aqui indicamos cuando caduca el token
+                Expires = DateTime.UtcNow.AddDays(5),
+                //Aqui especificamos nuestra clave y el algoritmo de firmado
+                SigningCredentials = new SigningCredentials(_tokenParameters.IssuerSigningKey,
+                SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            //Creamos el token y se lo devolvemos al usuario logueado
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();   
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+            string stringToken = tokenHandler.WriteToken(token);
+
+            return Ok(stringToken);//el token
         }
+
+
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
@@ -66,5 +101,10 @@ namespace BadServer.Controllers
                 return Ok("El usuario se ha registrado");
             
         }
+        
+    
+
+
+
     }
 }
