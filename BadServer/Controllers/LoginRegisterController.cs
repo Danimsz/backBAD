@@ -17,7 +17,6 @@ namespace BadServer.Controllers
     public class LoginRegisterController : ControllerBase
     {
         private readonly MyDbContext _dbContext;
-
         //Obtenemos por inyeccion los parametros preestablecidos para crear los token
         private readonly TokenValidationParameters _tokenParameters;
 
@@ -38,12 +37,17 @@ namespace BadServer.Controllers
             // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
             var user = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
 
-            
-
             // Control por si el usuario y la contraseña no coinciden
             if (user == null)
             {
                 return Unauthorized("Usuario o contraseña incorrectos");
+            }
+
+            // Asociar una cesta al usuario si no tiene una
+            if (user.Cesta == null)
+            {
+                user.Cesta = new Cesta();
+                await _dbContext.SaveChangesAsync();
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -103,8 +107,6 @@ namespace BadServer.Controllers
         }
         
     
-
-
 
     }
 }

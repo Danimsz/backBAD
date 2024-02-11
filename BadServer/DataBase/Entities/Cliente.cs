@@ -10,6 +10,8 @@ namespace BadServer.DataBase.Entities
         public string Email { get; set; }
         public string? Rol { get; set; }
 
+        public Cesta Cesta { get; set; }
+
     }
 
 }
