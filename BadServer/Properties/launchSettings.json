@@ -19,7 +19,7 @@
         "JWT_KEY": "lfjbsfkjbsñkgmañkmgañkngñakdnañkdmadkmfañdkmfñadkmgñdakngadñkngañdkgañdgmañdg"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7089;http://localhost:5174"
+      "applicationUrl": "http://localhost:5174"
     },
     "IIS Express": {
       "commandName": "IISExpress",

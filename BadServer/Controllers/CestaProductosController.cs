@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BadServer.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
+    
     public class CestaProductosController : ControllerBase
     {
         private readonly MyDbContext _dbContext;
@@ -27,7 +28,7 @@ namespace BadServer.Controllers
                 .Select(cp => new
                 {
                     cp.Producto.ProductoID,
-                    cp.Producto.Modelo,
+                    cp.Producto.Nombre,
                     cp.Producto.Precio,
                     cp.Producto.Cantidad
                 })
