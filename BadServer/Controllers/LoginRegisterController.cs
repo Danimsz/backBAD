@@ -43,11 +43,19 @@ namespace BadServer.Controllers
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            // Asociar una cesta al usuario si no tiene una
+            //Asociar una cesta al usuario si no tiene una
             if (user.Cesta == null)
             {
                 user.Cesta = new Cesta();
                 await _dbContext.SaveChangesAsync();
+
+                if(user.Cesta.CestaID > 0)
+                {
+                    Console.WriteLine("La cesta se ha creado");
+                } else
+                {
+                    Console.WriteLine("La cesta NO se ha creado");
+                }
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -55,11 +63,12 @@ namespace BadServer.Controllers
                 //Aqui añadimos los datos que sirvan para autorizrr al usuario
                 Claims = new Dictionary<string, object>
                 {
-                    { "id", Guid.NewGuid().ToString() }
+                    { "id", Guid.NewGuid().ToString() },
+                    { "CestaId", user.Cesta.CestaID.ToString() },
 
                 },
                 //Aqui indicamos cuando caduca el token
-                Expires = DateTime.UtcNow.AddDays(5),
+                Expires = DateTime.UtcNow.AddDays(365),
                 //Aqui especificamos nuestra clave y el algoritmo de firmado
                 SigningCredentials = new SigningCredentials(_tokenParameters.IssuerSigningKey,
                 SecurityAlgorithms.HmacSha256Signature)
