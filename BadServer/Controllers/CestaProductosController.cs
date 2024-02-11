@@ -9,11 +9,11 @@ namespace BadServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductosController : ControllerBase
+    public class CestaProductosController : ControllerBase
     {
         private readonly MyDbContext _dbContext;
 
-        public ProductosController(MyDbContext dbContext)
+        public CestaProductosController(MyDbContext dbContext)
         {
             _dbContext = dbContext;
         }
