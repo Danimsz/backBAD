@@ -27,7 +27,12 @@ namespace BadServer.Controllers
                         ProductoID = p.ProductoID,
                         Nombre = p.Nombre,
                         Precio = p.Precio,
-                        Imagen = p.Imagen
+                        Imagen = p.Imagen != null ? new ImagenDto
+                        {
+                            ImagenID = p.Imagen.ImagenID,
+                            ImagenNombre = p.Imagen.ImagenNombre,
+                            ImagenUrl = p.Imagen.ImagenUrl
+                        } : null
                     })
                     .ToListAsync();
 

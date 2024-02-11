@@ -13,6 +13,7 @@ namespace BadServer.DataBase
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Cesta> Cestas { get; set; }
         public DbSet<CestaProducto> cestaProductos { get; set; }
+        public DbSet<Imagen> Imagenes { get; set; }
 
 
         //Configura Entity Framework para crear un archivo de base de dato sqlite

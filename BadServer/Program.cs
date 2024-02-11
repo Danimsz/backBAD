@@ -7,7 +7,7 @@ namespace BadServer
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +43,7 @@ namespace BadServer
             //Tiene que ser scope para que cierre la conexion y limpie
             //Los recursos tras cada peticion
             builder.Services.AddScoped<MyDbContext>();
+            builder.Services.AddTransient<DbSeeder>();
 
             builder.Services.AddAuthentication()
              .AddJwtBearer(options =>
@@ -74,6 +75,17 @@ namespace BadServer
             {
                 MyDbContext dbContext = scope.ServiceProvider.GetService<MyDbContext>();
                dbContext.Database.EnsureCreated();
+
+                DbSeeder dbSeeder = scope.ServiceProvider.GetService<DbSeeder>();
+
+                if (dbSeeder != null)
+                {
+                    await dbSeeder.SeedAsync();
+                }
+                else
+                {
+                    Console.WriteLine("El servicio DbSeeder es nulo.");
+                }
 
             }
 

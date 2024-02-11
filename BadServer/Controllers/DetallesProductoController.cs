@@ -3,6 +3,7 @@ using BadServer.DataBase.Dto;
 using BadServer.DataBase.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BadServer.Controllers
 {
@@ -21,7 +22,7 @@ namespace BadServer.Controllers
         [HttpGet("Producto{id}")]
         public async Task<IActionResult> ObtenerDetalles(int id)
         {
-            var producto = await _dbContext.Productos.FindAsync(id);
+            var producto = await _dbContext.Productos.Include(p => p.Imagen).FirstOrDefaultAsync(p => p.ProductoID == id);
 
             if (producto == null)
             {
@@ -35,7 +36,9 @@ namespace BadServer.Controllers
                 Nombre = producto.Nombre,
                 Descripcion = producto.Descripcion,
                 Precio = producto.Precio,
-                Imagen = producto.Imagen,
+                ImagenID = producto.Imagen?.ImagenID,
+                ImagenNombre = producto.Imagen?.ImagenNombre,
+                ImagenUrl = producto.Imagen?.ImagenUrl,
                 Categoria = producto.Categoria
             };
 
@@ -44,14 +47,20 @@ namespace BadServer.Controllers
 
         [HttpPost("AñadirProducto")]
         public async Task<IActionResult> AgregarProducto([FromBody] DetallesProductoDto detallesProductoDto)
-        { 
+        {
+            var imagen = new Imagen
+            {
+                ImagenNombre = detallesProductoDto.ImagenNombre,
+                ImagenUrl = detallesProductoDto.ImagenUrl
+            };
+
             var nuevoProducto = new Producto
             {
                 Cantidad = detallesProductoDto.Cantidad,
                 Nombre = detallesProductoDto.Nombre,
                 Descripcion = detallesProductoDto.Descripcion,
                 Precio = detallesProductoDto.Precio,
-                Imagen = detallesProductoDto.Imagen,
+                Imagen = imagen,
                 Categoria = detallesProductoDto.Categoria
             };
 
@@ -69,7 +78,7 @@ namespace BadServer.Controllers
                 return BadRequest("El ID del producto no coincide.");
             }
 
-            var producto = await _dbContext.Productos.FindAsync(id);
+            var producto = await _dbContext.Productos.Include(p => p.Imagen).FirstOrDefaultAsync(p => p.ProductoID == id);
 
             if (producto == null)
             {
@@ -80,7 +89,8 @@ namespace BadServer.Controllers
             producto.Nombre = detallesProductoDto.Nombre;
             producto.Descripcion = detallesProductoDto.Descripcion;
             producto.Precio = detallesProductoDto.Precio;
-            producto.Imagen = detallesProductoDto.Imagen;
+            producto.Imagen.ImagenNombre = detallesProductoDto.ImagenNombre;
+            producto.Imagen.ImagenUrl = detallesProductoDto.ImagenUrl;
             producto.Categoria = detallesProductoDto.Categoria;
 
             await _dbContext.SaveChangesAsync();

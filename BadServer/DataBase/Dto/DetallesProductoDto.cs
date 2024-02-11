@@ -7,7 +7,9 @@
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public double Precio { get; set; }
-        public string Imagen { get; set; }
+        public int? ImagenID { get; set; }
+        public string ImagenNombre { get; set; }
+        public string ImagenUrl { get; set; }
         public string Categoria { get; set; }
     }
 }
