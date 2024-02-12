@@ -9,6 +9,8 @@ namespace BadServer
     {
         public static async Task Main(string[] args)
         {
+            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
             var builder = WebApplication.CreateBuilder(args);
 
             //añade la dependencia de los controladores
@@ -130,6 +132,8 @@ namespace BadServer
             //Los controladores que se registraon anterionmente
             //PAra manejar las solicitudes  HTTP entrantes 
             app.MapControllers();
+
+            app.UseStaticFiles();
 
             app.Run();
         }
