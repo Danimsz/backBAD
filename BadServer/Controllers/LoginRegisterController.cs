@@ -77,8 +77,10 @@ namespace BadServer.Controllers
             //Creamos el token y se lo devolvemos al usuario logueado
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();   
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-            string stringToken = tokenHandler.WriteToken(token);
+            string stringToken = tokenHandler.WriteToken(token); 
 
+            var idUser = user.ClienteID.ToString();
+            stringToken += (idUser);
             return Ok(stringToken);//el token
         }
 
