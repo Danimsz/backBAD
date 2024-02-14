@@ -31,6 +31,8 @@ namespace BadServer.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
+
+            var comprobacion = "";
             // Hashea la contraseña proporcionada
             var hashedPassword = PasswordHelper.Hash(loginDto.Password);
 
@@ -46,16 +48,29 @@ namespace BadServer.Controllers
             //Asociar una cesta al usuario si no tiene una
             if (user.Cesta == null)
             {
-                user.Cesta = new Cesta();
-                await _dbContext.SaveChangesAsync();
+                var existeCesta = await _dbContext.Cestas.FirstOrDefaultAsync(c => c.ClienteID == user.ClienteID);
 
-                if(user.Cesta.CestaID > 0)
+                if(existeCesta == null)
                 {
-                    Console.WriteLine("La cesta se ha creado");
-                } else
-                {
-                    Console.WriteLine("La cesta NO se ha creado");
+                    user.Cesta = new Cesta();
+                    await _dbContext.SaveChangesAsync();
+
+                    //Para comprobar si la cesta se crea
+                    if (user.Cesta.CestaID > 0)
+                    {
+                        comprobacion = "La cesta se ha creado";
+                    }
+                    else
+                    {
+                        comprobacion = "La cesta NO se ha creado";
+                    }
                 }
+                else
+                {
+                    comprobacion = "El usuario ya tiene una cesta";
+                }
+
+                
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -79,7 +94,11 @@ namespace BadServer.Controllers
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             string stringToken = tokenHandler.WriteToken(token);
 
-            return Ok(stringToken);//el token
+            var idCesta = user.Cesta.CestaID.ToString();
+            var idUsuario = user.ClienteID.ToString();
+            //stringToken += (idUser);
+
+            return Ok(stringToken + " idUsuario: "+ idUsuario +" idCesta: "+ idCesta +" "+ comprobacion);
         }
 
 
