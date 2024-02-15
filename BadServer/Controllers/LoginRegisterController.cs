@@ -47,17 +47,26 @@ namespace BadServer.Controllers
             // Asociar una cesta al usuario si no tiene una
             if (user.Cesta == null)
             {
-                user.Cesta = new Cesta();
-                await _dbContext.SaveChangesAsync();
+                var existeCesta = await _dbContext.Cestas.FirstOrDefaultAsync(c => c.ClienteID == user.ClienteID);
 
-                if (user.Cesta.CestaID > 0)
+                if (existeCesta == null)
                 {
-                    Console.WriteLine("La cesta se ha creado");
-                }
-                else
+                    user.Cesta = new Cesta();
+                    await _dbContext.SaveChangesAsync();
+
+                    if (user.Cesta.CestaID > 0)
+                    {
+                        Console.WriteLine("La cesta se ha creado");
+                    }
+                    else
+                    {
+                        Console.WriteLine("La cesta NO se ha creado");
+                    }
+                } else
                 {
-                    Console.WriteLine("La cesta NO se ha creado");
+                    Console.WriteLine("El usuario ya tiene una cesta");
                 }
+
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -82,7 +91,7 @@ namespace BadServer.Controllers
             string stringToken = tokenHandler.WriteToken(token);
 
             // Devolvemos tanto el token como el UserId
-            return Ok(new { Token = stringToken, UserId = user.ClienteID });
+            return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID });
         }
 
 
