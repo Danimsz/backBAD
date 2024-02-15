@@ -72,6 +72,24 @@ namespace BadServer.Controllers
             return Ok("El producto se ha añadido correctamente");
         }
 
+        /*[HttpPut("{cestaId}/actualizar")]
+        public async Task<IActionResult> ActualizarProductoCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
+        {
+            //Para ver si esta en la cesta el producto
+            var productoExists = await _dbContext.cestaProductos.AnyAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
+            if (!productoExists)
+            {
+                return BadRequest("El producto no se encuentra en la cesta");
+            }
+
+            //Si esta le cambia la cantidad
+            var cestaProducto = await _dbContext.cestaProductos.FirstAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
+            cestaProducto.Cantidad = agregarProductoDto.Cantidad;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("La cantidad del producto se ha actualizado correctamente");
+        }*/
 
         [HttpDelete("{cestaId}/quitar")]
         public async Task<IActionResult> QuitarProductosCesta(int cestaId, [FromBody] QuitarProductoDto quitarProductoDto)
