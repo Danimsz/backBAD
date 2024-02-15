@@ -30,7 +30,7 @@ namespace BadServer.Controllers
                     cp.Producto.ProductoID,
                     cp.Producto.Nombre,
                     cp.Producto.Precio,
-                    cp.Producto.Cantidad
+                    cp.Cantidad
                 })
                 .ToListAsync();
 
@@ -54,7 +54,7 @@ namespace BadServer.Controllers
             //Si el producto ya esta en la cesta, actualiza la cantidad
             if (cestaProducto != null)
             {
-                cestaProducto.Cantidad += 1;
+                cestaProducto.Cantidad += agregarProductoDto.Cantidad;
             }
             else //si no esta en la cesta, lo añadimos
             {
@@ -62,7 +62,7 @@ namespace BadServer.Controllers
                 {
                     CestaID = cestaId,
                     ProductoID = agregarProductoDto.ProductoID,
-                    Cantidad = 1
+                    Cantidad = agregarProductoDto.Cantidad
                 };
 
                 _dbContext.cestaProductos.Add(cestaProducto);
