@@ -121,7 +121,7 @@ namespace BadServer.Controllers
                 _dbContext.Clientes.Add(newUser);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("El usuario se ha registrado");   
+            return Ok("El usuario se ha registrado");   
         }
     }
 }
