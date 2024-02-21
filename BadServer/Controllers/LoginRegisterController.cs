@@ -31,13 +31,12 @@ namespace BadServer.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-
-            var comprobacion = "";
             // Hashea la contraseña proporcionada
             var hashedPassword = PasswordHelper.Hash(loginDto.Password);
 
             // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
             var user = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
+              
 
             // Control por si el usuario y la contraseña no coinciden
             if (user == null)
@@ -45,43 +44,40 @@ namespace BadServer.Controllers
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            //Asociar una cesta al usuario si no tiene una
+            // Asociar una cesta al usuario si no tiene una
             if (user.Cesta == null)
             {
                 var existeCesta = await _dbContext.Cestas.FirstOrDefaultAsync(c => c.ClienteID == user.ClienteID);
 
-                if(existeCesta == null)
+                if (existeCesta == null)
                 {
                     user.Cesta = new Cesta();
                     await _dbContext.SaveChangesAsync();
 
-                    //Para comprobar si la cesta se crea
                     if (user.Cesta.CestaID > 0)
                     {
-                        comprobacion = "La cesta se ha creado";
+                        Console.WriteLine("La cesta se ha creado");
                     }
                     else
                     {
-                        comprobacion = "La cesta NO se ha creado";
+                        Console.WriteLine("La cesta NO se ha creado");
                     }
-                }
-                else
+                } else
                 {
-                    comprobacion = "El usuario ya tiene una cesta";
+                    Console.WriteLine("El usuario ya tiene una cesta");
                 }
 
-                
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                //Aqui añadimos los datos que sirvan para autorizrr al usuario
+                //Aqui añadimos los datos que sirvan para autorizar al usuario
                 Claims = new Dictionary<string, object>
-                {
-                    { "id", Guid.NewGuid().ToString() },
-                    { "CestaId", user.Cesta.CestaID.ToString() },
-
-                },
+            {
+                { "id", Guid.NewGuid().ToString() },
+                { "CestaId", user.Cesta.CestaID.ToString() },
+                { "UserId", user.ClienteID } // Agregamos el UserId al token
+            },
                 //Aqui indicamos cuando caduca el token
                 Expires = DateTime.UtcNow.AddDays(365),
                 //Aqui especificamos nuestra clave y el algoritmo de firmado
@@ -90,15 +86,12 @@ namespace BadServer.Controllers
             };
 
             //Creamos el token y se lo devolvemos al usuario logueado
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();   
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             string stringToken = tokenHandler.WriteToken(token);
 
-            var idCesta = user.Cesta.CestaID.ToString();
-            var idUsuario = user.ClienteID.ToString();
-            //stringToken += (idUser);
-
-            return Ok(stringToken + " idUsuario: "+ idUsuario +" idCesta: "+ idCesta +" "+ comprobacion);
+            // Devolvemos tanto el token como el UserId
+            return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID });
         }
 
 
