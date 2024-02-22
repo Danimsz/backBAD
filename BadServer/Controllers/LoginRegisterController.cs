@@ -94,8 +94,6 @@ namespace BadServer.Controllers
             return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID });
         }
 
-
-
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
@@ -123,11 +121,7 @@ namespace BadServer.Controllers
                 _dbContext.Clientes.Add(newUser);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("El usuario se ha registrado");
-            
+                return Ok("El usuario se ha registrado");   
         }
-        
-    
-
     }
 }
