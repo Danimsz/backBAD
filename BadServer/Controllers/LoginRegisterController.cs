@@ -35,8 +35,7 @@ namespace BadServer.Controllers
             var hashedPassword = PasswordHelper.Hash(loginDto.Password);
 
             // Busca un usuario que coincida con el nombre de usuario y la contraseña hasheada
-            var user = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
-              
+            var user = await _dbContext.Clientes.Include(u => u.Cesta).FirstOrDefaultAsync(u => u.UserName == loginDto.UserName && u.Password == hashedPassword);
 
             // Control por si el usuario y la contraseña no coinciden
             if (user == null)
@@ -44,40 +43,21 @@ namespace BadServer.Controllers
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            // Asociar una cesta al usuario si no tiene una
+            // Comprueba si el usuario tiene una cesta asociada
             if (user.Cesta == null)
             {
-                var existeCesta = await _dbContext.Cestas.FirstOrDefaultAsync(c => c.ClienteID == user.ClienteID);
-
-                if (existeCesta == null)
-                {
-                    user.Cesta = new Cesta();
-                    await _dbContext.SaveChangesAsync();
-
-                    if (user.Cesta.CestaID > 0)
-                    {
-                        Console.WriteLine("La cesta se ha creado");
-                    }
-                    else
-                    {
-                        Console.WriteLine("La cesta NO se ha creado");
-                    }
-                } else
-                {
-                    Console.WriteLine("El usuario ya tiene una cesta");
-                }
-
+                return BadRequest("El usuario no tiene una cesta asociada");
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 //Aqui añadimos los datos que sirvan para autorizar al usuario
                 Claims = new Dictionary<string, object>
-            {
-                { "id", Guid.NewGuid().ToString() },
-                { "CestaId", user.Cesta.CestaID.ToString() },
-                { "UserId", user.ClienteID } // Agregamos el UserId al token
-            },
+                {
+                    { "id", Guid.NewGuid().ToString() },
+                    { "CestaId", user.Cesta.CestaID.ToString() },
+                    { "UserId", user.ClienteID } // Agregamos el UserId al token
+                },
                 //Aqui indicamos cuando caduca el token
                 Expires = DateTime.UtcNow.AddDays(365),
                 //Aqui especificamos nuestra clave y el algoritmo de firmado
@@ -90,38 +70,52 @@ namespace BadServer.Controllers
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             string stringToken = tokenHandler.WriteToken(token);
 
-            // Devolvemos tanto el token como el UserId
+            // Devolvemos tanto el token como el UserId y CestaId
             return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID });
         }
+
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            
-                // A benito le da error aqui
-                // Aqui se comprueba si el usuario ya existe para no crearlo
-                if (await _dbContext.Clientes.AnyAsync(u => u.UserName == registerDto.UserName))
-                {
-                    return BadRequest("El nombre de usuario ya existe");
-                }
+
+            // A benito le da error aqui
+            // Aqui se comprueba si el usuario ya existe para no crearlo
+            if (await _dbContext.Clientes.AnyAsync(u => u.UserName == registerDto.UserName))
+            {
+                return BadRequest("El nombre de usuario ya existe");
+            }
 
             //hasheamos la contraseña.
             //var hashedPassword = PasswordHelper.Hash(registerDto.Password);
             // Se crea el nuevo usuario, compruebalo bien Benito
+            // Se crea el nuevo usuario
             var newUser = new Cliente
-                {
-                    UserName = registerDto.UserName,
-                    //Hasheamos la contraseña
-                    Password = PasswordHelper.Hash(registerDto.Password),//registerDto.Password,
-                    Email = registerDto.Email,
-                    Address = registerDto.Address,
-                    Rol = "Usuario" // Esto ultimo me dijo Amanda que lo añadiera
-                };
+            {
+                UserName = registerDto.UserName,
+                //Hasheamos la contraseña
+                Password = PasswordHelper.Hash(registerDto.Password),
+                Email = registerDto.Email,
+                Address = registerDto.Address,
+                Rol = "Usuario"
+            };
 
-                _dbContext.Clientes.Add(newUser);
-                await _dbContext.SaveChangesAsync();
+            // Añade el nuevo usuario a la base de datos
+            _dbContext.Clientes.Add(newUser);
+            await _dbContext.SaveChangesAsync();
 
-                return Ok("El usuario se ha registrado");   
+            // Crea una nueva cesta para el usuario
+            var newCesta = new Cesta();
+
+            // Asigna la nueva cesta al usuario
+            newUser.Cesta = newCesta;
+
+            // Añade la nueva cesta a la base de datos
+            _dbContext.Cestas.Add(newCesta);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { UserId = newUser.ClienteID, CestaId = newCesta.CestaID });
+
         }
     }
 }
