@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BadServer.Controllers
 {
     
@@ -23,6 +24,8 @@ namespace BadServer.Controllers
         public async Task<IActionResult> ObtenerDetalles(int id)
         {
             var producto = await _dbContext.Productos.Include(p => p.Imagen).FirstOrDefaultAsync(p => p.ProductoID == id);
+            String test = "Benito";
+
 
             if (producto == null)
             {
@@ -41,7 +44,7 @@ namespace BadServer.Controllers
                 ImagenUrl = producto.Imagen?.ImagenUrl,
                 Categoria = producto.Categoria
             };
-
+            EmailService.SendMessageAsync("benito11gallardo@gmail.com", "test asunto", test, false);
             return Ok(detallesProductoDto);
         }
 
