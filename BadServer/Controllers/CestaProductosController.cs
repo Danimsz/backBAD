@@ -92,36 +92,29 @@ namespace BadServer.Controllers
             return Ok("La cantidad del producto se ha actualizado correctamente");
         }*/
 
-        [HttpDelete("{cestaId}/quitar")]
-        public async Task<IActionResult> QuitarProductosCesta(int cestaId, [FromBody] QuitarProductoDto quitarProductoDto)
+        [HttpDelete("{cestaId}/quitar/{productoId}")]
+        public async Task<IActionResult> QuitarProductoCesta(int cestaId, int productoId)
         {
-            //Comprobamos si el producto existe en la cesta
-            var productoExists = await _dbContext.cestaProductos.AnyAsync(cp => cp.CestaID == cestaId && cp.ProductoID == quitarProductoDto.ProductoID);
-            //Si no esta, se comunica
-            if (!productoExists)
+            var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == productoId);
+            if (cestaProducto == null)
             {
-                //Con return se termina la ejecucion
-                return BadRequest("El producto no se encuentra en la cesta");
+                return NotFound("El producto no se encuentra en la cesta");
             }
 
-            //Si esta, disminuimos la cantidad de 1 en 1
-            var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == quitarProductoDto.ProductoID);
-            if (cestaProducto != null)
+            if (cestaProducto.Cantidad > 1)
             {
-                //Si la cantidad es mayor que uno, la disminuye de 1 a 1
-                if (cestaProducto.Cantidad > 1)
-                {
-                    cestaProducto.Cantidad -= 1;
-                }
-                else //Si no, elimina
-                {
-                    _dbContext.cestaProductos.Remove(cestaProducto);
-                }
+                cestaProducto.Cantidad -= 1;
+            }
+            else
+            {
+                _dbContext.cestaProductos.Remove(cestaProducto);
             }
 
             await _dbContext.SaveChangesAsync();
 
-            return Ok("El producto se ha eliminado correctamente");
+            // Devolver la cantidad actualizada
+            return Ok(new { cantidad = cestaProducto.Cantidad });
         }
+
     }
 }
