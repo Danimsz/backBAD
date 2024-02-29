@@ -27,6 +27,7 @@ namespace BadServer.Controllers
                 .Include(cp => cp.Producto)
                 .Select(cp => new
                 {
+                    cp.Producto.Imagen,
                     cp.Producto.ProductoID,
                     cp.Producto.Nombre,
                     cp.Producto.Precio,
@@ -38,7 +39,7 @@ namespace BadServer.Controllers
         }
 
         
-        [HttpPost("{cestaId}/añadir")]
+        [HttpPost("{cestaId}/agregar")]
         public async Task<IActionResult> AgregarProductosCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
         {
             //Comprobamos si el producto existe en la tabla productos
@@ -70,7 +71,7 @@ namespace BadServer.Controllers
 
             //guardamos los cambios en la base de datos
             await _dbContext.SaveChangesAsync();
-            return Ok("El producto se ha añadido correctamente");
+            return Ok("El producto se ha agregado correctamente");
         }
 
         /*[HttpPut("{cestaId}/actualizar")]
