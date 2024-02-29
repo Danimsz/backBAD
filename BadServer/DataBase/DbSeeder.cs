@@ -14,14 +14,13 @@ namespace BadServer.DataBase
 
         public async Task SeedAsync()
         {
-            await _dbContext.Database.EnsureCreatedAsync();
-
-            _dbContext.Imagenes.RemoveRange(_dbContext.Imagenes);
-            _dbContext.Productos.RemoveRange(_dbContext.Productos);
-            await _dbContext.SaveChangesAsync();
-
+            bool created = await _dbContext.Database.EnsureCreatedAsync();
+            
+            if (created) {
             await SeedImagesAsync();
             await SeedProductosAsync();
+            await _dbContext.SaveChangesAsync();
+            }
         }
 
         private async Task SeedImagesAsync()

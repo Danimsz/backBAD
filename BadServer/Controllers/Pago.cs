@@ -34,19 +34,13 @@ namespace Pago.Controllers
             return _dbContext.Productos;
         }
 
-        [HttpPost("buy/{productId}")]
-        public async Task<TransactionToSing> BuyAsync(int productId, [FromBody] string clientWallet)
+        [HttpPost("buy")]
+        public async Task<TransactionToSing> BuyAsync([FromForm] string clientWallet, [FromForm] decimal totalPrice)
         {
-            Producto product = await _dbContext.Productos.FirstOrDefaultAsync(p => p.ProductoID == productId);
-            if (product == null)
-            {
-                throw new Exception($"El producto con ID {productId} no fue encontrado.");
-                // También puedes lanzar un tipo de excepción específico, por ejemplo:
-                // throw new ProductoNoEncontradoException(productId);
-            }
-            using CoinGeckoApi coinGeckoApi = new CoinGeckoApi();
-            double ethereumEur = (double)await coinGeckoApi.GetEthereumPriceAsync();
-            BigInteger priceWei = Web3.Convert.ToWei(product.Precio / ethereumEur); //Wei
+            using CoinGeckoApi coincGeckoApi = new CoinGeckoApi();
+            decimal ethereumEur = await coincGeckoApi.GetEthereumPriceAsync();
+            BigInteger priceWei = Web3.Convert.ToWei(totalPrice / ethereumEur);
+
 
             Web3 web3 = new Web3(NETWORK_URL);
 
@@ -61,24 +55,34 @@ namespace Pago.Controllers
 
             Transaction transaction = new Transaction()
             {
-                Id = _dbContext.Transactions.Count(),
                 ClientWallet = transactionToSing.From,
-                Value = transactionToSing.Value
+                Value = transactionToSing.Value,
+                Hash = ""
             };
 
-            _dbContext.Transactions.Add(transaction);
+            await _dbContext.Transactions.AddAsync(transaction);
+            await _dbContext.SaveChangesAsync();
             transactionToSing.Id = transaction.Id;
 
             return transactionToSing;
         }
+
+        // Clase para representar el cuerpo de la solicitud que incluye el precio total en Ethereum
+        public class PrecioTotalBody
+        {
+            public string ClientWallet { get; set; }
+            public BigInteger PrecioTotal { get; set; } // Aquí almacenaremos el precio total en Ethereum
+        }
+
 
         [HttpPost("check/{transactionId}")]
         public async Task<bool> CheckTransactionAsync(int transactionId, [FromBody] string txHash)
         {
             bool success = false;
             Transaction transaction = await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Id == transactionId);
-            if (transaction == null)
-                transaction.Hash = txHash;
+            
+            transaction.Hash = txHash;
+            
 
             Web3 web3 = new Web3(NETWORK_URL);
             var receiptPollingService = new TransactionReceiptPollingService(
@@ -110,7 +114,7 @@ namespace Pago.Controllers
             }
 
             transaction.Completed = success;
-
+            await _dbContext.SaveChangesAsync();
             return success;
         }
     }

@@ -14,11 +14,9 @@ namespace BadServer.DataBase
         public DbSet<Cesta> Cestas { get; set; }
         public DbSet<CestaProducto> cestaProductos { get; set; }
         public DbSet<Imagen> Imagenes { get; set; }
-        public DbSet<Transaction> Transactions { get; private set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
-        public decimal ethereumEur { get; set; }
-
-
+     
         //Configura Entity Framework para crear un archivo de base de dato sqlite
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
