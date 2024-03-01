@@ -9,7 +9,7 @@ namespace BadServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    
+
     public class CestaProductosController : ControllerBase
     {
         private readonly MyDbContext _dbContext;
@@ -38,7 +38,7 @@ namespace BadServer.Controllers
             return Ok(productos);
         }
 
-        
+
         [HttpPost("{cestaId}/agregar")]
         public async Task<IActionResult> AgregarProductosCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
         {
@@ -118,4 +118,5 @@ namespace BadServer.Controllers
         }
 
     }
+    
 }

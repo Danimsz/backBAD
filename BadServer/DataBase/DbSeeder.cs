@@ -16,7 +16,7 @@ namespace BadServer.DataBase
         {
             bool created = await _dbContext.Database.EnsureCreatedAsync();
             
-            if (created) {
+            if (!created) {
             await SeedImagesAsync();
             await SeedProductosAsync();
             await _dbContext.SaveChangesAsync();

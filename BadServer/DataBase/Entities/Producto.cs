@@ -14,5 +14,6 @@ namespace BadServer.DataBase.Entities
         public Imagen Imagen { get; set; }
         public string Categoria { get; set; }   
         public ICollection<CestaProducto> CestaProductos { get; set; }
+        public ICollection<PedidoProducto> PedidoProductos { get; set; }
     }
 }
