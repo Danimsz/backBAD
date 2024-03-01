@@ -49,29 +49,46 @@ namespace BadServer.Controllers
                 return BadRequest("El producto no existe");
             }
 
-            //Añadimos el producto en la cesta
-            var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
+            //obtengo producto
+            var producto = await _dbContext.Productos.FirstAsync(p => p.ProductoID == agregarProductoDto.ProductoID);
 
-            //Si el producto ya esta en la cesta, actualiza la cantidad de 1 en 1
-            if (cestaProducto != null)
+            if(producto.Cantidad > 0)
             {
-                cestaProducto.Cantidad += 1;
-            }
-            else //si no esta en la cesta, lo añadimos
-            {
-                cestaProducto = new CestaProducto
+                //obtengo cesta
+                var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
+
+                //Si el producto ya esta en la cesta
+                if (cestaProducto != null)
                 {
-                    CestaID = cestaId,
-                    ProductoID = agregarProductoDto.ProductoID,
-                    Cantidad = agregarProductoDto.Cantidad
-                };
+                    //se suma la cantidad indicada a la que ya habia
+                    cestaProducto.Cantidad += agregarProductoDto.Cantidad;
 
-                _dbContext.cestaProductos.Add(cestaProducto);
+                }
+                else //si no esta en la cesta, lo añadimos
+                {
+                    cestaProducto = new CestaProducto
+                    {
+                        CestaID = cestaId,
+                        ProductoID = agregarProductoDto.ProductoID,
+                        Cantidad = agregarProductoDto.Cantidad
+                    };
+
+                    _dbContext.cestaProductos.Add(cestaProducto);
+                }
+
+                //restamos la cantidad de producto en la bd
+                producto.Cantidad -= agregarProductoDto.Cantidad;
+
+                //guardamos los cambios en la base de datos
+                await _dbContext.SaveChangesAsync();
+                return Ok("El producto se ha agregado correctamente");
+
             }
-
-            //guardamos los cambios en la base de datos
-            await _dbContext.SaveChangesAsync();
-            return Ok("El producto se ha agregado correctamente");
+            else
+            {
+                return BadRequest("No hay stock de este producto");
+            }
+            
         }
 
         /*[HttpPut("{cestaId}/actualizar")]
@@ -96,6 +113,9 @@ namespace BadServer.Controllers
         [HttpDelete("{cestaId}/quitar/{productoId}")]
         public async Task<IActionResult> QuitarProductoCesta(int cestaId, int productoId)
         {
+            //obtengo producto
+            var producto = await _dbContext.Productos.FirstAsync(p => p.ProductoID == productoId);
+
             var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == productoId);
             if (cestaProducto == null)
             {
@@ -110,6 +130,9 @@ namespace BadServer.Controllers
             {
                 _dbContext.cestaProductos.Remove(cestaProducto);
             }
+
+            //restamos la cantidad de producto en la bd
+            producto.Cantidad += 1;
 
             await _dbContext.SaveChangesAsync();
 
