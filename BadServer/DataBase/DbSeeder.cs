@@ -15,13 +15,18 @@ namespace BadServer.DataBase
         public async Task SeedAsync()
         {
             bool created = await _dbContext.Database.EnsureCreatedAsync();
-            
-            if (!created) {
-            await SeedImagesAsync();
-            await SeedProductosAsync();
-            await _dbContext.SaveChangesAsync();
+
+            if (!created)
+            {
+                if (!_dbContext.Productos.Any())
+                {
+                    await SeedImagesAsync();
+                    await SeedProductosAsync();
+                }
+                await _dbContext.SaveChangesAsync();
             }
         }
+
 
         private async Task SeedImagesAsync()
         {

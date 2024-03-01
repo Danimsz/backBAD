@@ -1,12 +1,7 @@
-﻿using System.Data.SqlTypes;
-
-namespace BadServer.DataBase.Entities
+﻿namespace BadServer.DataBase.Dto
 {
-    public class Pedido
+    public class PedidoDto
     {
-
-
-        public int Id { get; set; }
         public int ClienteID { get; set; }
         public string MetodoPago { get; set; }
         public decimal Total { get; set; }
@@ -16,8 +11,13 @@ namespace BadServer.DataBase.Entities
         public string? HashTransaccion { get; set; }
         public string? WalletCliente { get; set; }
         public DateTime FechaPedido { get; set; }
-        public string DireccionCliente { get; set; }
-        public ICollection<PedidoProducto> PedidoProductos { get; set; }
-        public Cliente Cliente { get; set; }
+        public List<ProductoDto> Productos { get; set; }
+    }
+
+    public class ProductoDto
+    {
+        public int ProductoID { get; set; }
+        public int Cantidad { get; set; }
+        public double PrecioUnitario { get; set; }
     }
 }
