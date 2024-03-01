@@ -44,7 +44,7 @@ namespace BadServer.Controllers
                 ImagenUrl = producto.Imagen?.ImagenUrl,
                 Categoria = producto.Categoria
             };
-            EmailService.SendMessageAsync("benito11gallardo@gmail.com", "test asunto", test, false);
+            
             return Ok(detallesProductoDto);
         }
 
