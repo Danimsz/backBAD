@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Threading.Tasks;
-using BadServer.DataBase;
+﻿using BadServer.DataBase;
 using BadServer.DataBase.Dto;
 using BadServer.DataBase.Entities;
 using Microsoft.AspNetCore.Mvc;
