@@ -53,6 +53,7 @@ namespace BadServer.Controllers
                     {
                         u.ClienteID,
                         u.UserName,
+                        u.Address,
                         u.Rol,
                         u.Email
                     })

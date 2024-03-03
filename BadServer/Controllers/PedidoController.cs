@@ -244,4 +244,3 @@ namespace BadServer.Controllers
         }
     }
 }
-
