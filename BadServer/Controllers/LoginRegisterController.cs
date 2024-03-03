@@ -56,7 +56,7 @@ namespace BadServer.Controllers
                 {
                     { "id", Guid.NewGuid().ToString() },
                     { "CestaId", user.Cesta.CestaID.ToString() },
-                    { "UserId", user.ClienteID } // Agregamos el UserId al token
+                    { "UserId", user.ClienteID }
                 },
                 //Aqui indicamos cuando caduca el token
                 Expires = DateTime.UtcNow.AddDays(365),
@@ -71,7 +71,7 @@ namespace BadServer.Controllers
             string stringToken = tokenHandler.WriteToken(token);
 
             // Devolvemos tanto el token como el UserId y CestaId
-            return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID });
+            return Ok(new { Token = stringToken, UserId = user.ClienteID, CestaId = user.Cesta.CestaID, Rol = user.Rol });
         }
 
 
