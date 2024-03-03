@@ -29,6 +29,7 @@ namespace BadServer.Controllers
                     {
                         u.ClienteID,
                         u.UserName,
+                        u.Address,
                         u.Rol,
                         u.Email
                     })
@@ -38,7 +39,7 @@ namespace BadServer.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+                return StatusCode(500, $"Error, no tienes ni idea: {ex.Message}");
             }
         }
 
@@ -68,12 +69,12 @@ namespace BadServer.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+                return StatusCode(500, $"Error, sigues sin saber: {ex.Message}");
             }
         }
 
         [HttpPut("EditarUsuarioAdmin/{usuarioId}")]
-        public async Task<IActionResult> EditarUsuario(int usuarioId, [FromBody] UsuarioEditAdminDto usuarioDto)
+        public async Task<IActionResult> EditarUsuarioAdmin(int usuarioId, [FromBody] UsuarioEditAdminDto usuarioDto)
         {
             try
             {
@@ -89,13 +90,14 @@ namespace BadServer.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok($"Usuario con ID {usuarioId} editado correctamente");
+                return Ok(new { message = $"Usuario con ID {usuarioId} editado correctamente" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+                return StatusCode(500, $"Error, no sabes: {ex.Message}");
             }
         }
+
 
         [HttpPut("EditarUsuario/{usuarioId}")]
         public async Task<IActionResult> EditarUsuario(int usuarioId, [FromBody] EditarUsuarioDto editarUsuarioDto)
@@ -130,10 +132,9 @@ namespace BadServer.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+                return StatusCode(500, $"Error, lo sigues intentando?: {ex.Message}");
             }
         }
-
 
         [HttpDelete("BorrarUsuario/{usuarioId}")]
         public async Task<IActionResult> BorrarUsuario(int usuarioId)
@@ -150,13 +151,12 @@ namespace BadServer.Controllers
                 _dbContext.Clientes.Remove(usuario);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok($"Usuario con ID {usuarioId} borrado correctamente");
+                return Ok(new { message = $"Usuario con ID {usuarioId} borrado correctamente" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+                return StatusCode(500, $"Error, nahh es broma esta vez tampoco: {ex.Message}");
             }
         }
-
     }
 }

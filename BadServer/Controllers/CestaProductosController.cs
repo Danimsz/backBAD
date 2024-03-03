@@ -82,7 +82,7 @@ namespace BadServer.Controllers
 
                 //guardamos los cambios en la base de datos
                 await _dbContext.SaveChangesAsync();
-                return Ok("El producto se ha agregado correctamente");
+                return Ok(new { message = "El producto se ha agregado correctamente" });
 
             }
             else
