@@ -71,8 +71,8 @@ namespace BadServer.Controllers
             }
         }
 
-        [HttpPut("EditarUsuario/{usuarioId}")]
-        public async Task<IActionResult> EditarUsuario(int usuarioId, [FromBody] UsuarioEditDto usuarioDto)
+        [HttpPut("EditarUsuarioAdmin/{usuarioId}")]
+        public async Task<IActionResult> EditarUsuario(int usuarioId, [FromBody] UsuarioEditAdminDto usuarioDto)
         {
             try
             {
@@ -95,6 +95,44 @@ namespace BadServer.Controllers
                 return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
             }
         }
+
+        [HttpPut("EditarUsuario/{usuarioId}")]
+        public async Task<IActionResult> EditarUsuario(int usuarioId, [FromBody] EditarUsuarioDto editarUsuarioDto)
+        {
+            try
+            {
+                var usuario = await _dbContext.Clientes.FirstOrDefaultAsync(u => u.ClienteID == usuarioId);
+
+                if (usuario == null)
+                {
+                    return NotFound($"Usuario con ID {usuarioId} no encontrado");
+                }
+
+                usuario.UserName = editarUsuarioDto.UserName ?? usuario.UserName;
+                usuario.Email = editarUsuarioDto.Email ?? usuario.Email;
+                usuario.Address = editarUsuarioDto.Address ?? usuario.Address;
+
+                if (!string.IsNullOrEmpty(editarUsuarioDto.Password))
+                {
+                    usuario.Password = PasswordHelper.Hash(editarUsuarioDto.Password);
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    usuario.ClienteID,
+                    usuario.UserName,
+                    usuario.Email,
+                    usuario.Address
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al procesar la solicitud: {ex.Message}");
+            }
+        }
+
 
         [HttpDelete("BorrarUsuario/{usuarioId}")]
         public async Task<IActionResult> BorrarUsuario(int usuarioId)
