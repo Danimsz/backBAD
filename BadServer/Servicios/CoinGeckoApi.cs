@@ -1,4 +1,6 @@
-﻿namespace BadServer.Servicios {
+﻿using Newtonsoft.Json;
+
+namespace BadServer.Servicios {
 
 public class CoinGeckoApi : IDisposable
 {
@@ -14,14 +16,15 @@ public class CoinGeckoApi : IDisposable
         };
     }
 
-    public async Task<decimal> GetEthereumPriceAsync()
-    {
-        string json = await HttpClient.GetStringAsync("coins/ethereum");
+        public async Task<decimal> GetEthereumPriceAsync()
+        {
+            string json = await HttpClient.GetStringAsync("coins/ethereum");
+            var data = JsonConvert.DeserializeObject<dynamic>(json);
+            decimal price = (decimal)data.market_data.current_price.eur;
+            return price;
+        }
 
-        return 1000;
-    }
-
-    public void Dispose()
+        public void Dispose()
     {
         HttpClient.Dispose();
     } 
