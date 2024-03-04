@@ -43,7 +43,14 @@ namespace BadServer.DataBase
                 new Imagen() { ImagenNombre = "9", ImagenUrl = "images/jordan1_negrogris.jpg" },
                 new Imagen() { ImagenNombre = "10", ImagenUrl = "images/jordan1_panda.jpg" },
                 new Imagen() { ImagenNombre = "11", ImagenUrl = "images/jordan1_roja.jpg" },
-                new Imagen() { ImagenNombre = "12", ImagenUrl = "images/jordan1_rojablanca.jpg" }
+                new Imagen() { ImagenNombre = "12", ImagenUrl = "images/adidas_bom.jpg" },
+                new Imagen() { ImagenNombre = "13", ImagenUrl = "images/adidas_camello.jpg" },
+                new Imagen() { ImagenNombre = "14", ImagenUrl = "images/adidas_frikinav.jpg" },
+                new Imagen() { ImagenNombre = "15", ImagenUrl = "images/adidas_hirmano.jpg" },
+                new Imagen() { ImagenNombre = "16", ImagenUrl = "images/adidas_navaja.jpg" },
+                new Imagen() { ImagenNombre = "17", ImagenUrl = "images/adidas_pato.jpg" },
+                new Imagen() { ImagenNombre = "18", ImagenUrl = "images/jordan_email.jpg" },
+                new Imagen() { ImagenNombre = "19", ImagenUrl = "images/jordan_x_kenkri.jpg" }
 
             };
 
@@ -68,7 +75,15 @@ namespace BadServer.DataBase
             Imagen imagen10 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "10");
             Imagen imagen11 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "11");
             Imagen imagen12 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "12");
+            Imagen imagen13 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "13");
+            Imagen imagen14 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "14");
+            Imagen imagen15 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "15");
+            Imagen imagen16 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "16");
+            Imagen imagen17 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "17");
+            Imagen imagen18 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "18");
+            Imagen imagen19 = await _dbContext.Imagenes.FirstOrDefaultAsync(i => i.ImagenNombre == "19");
             
+
 
             Console.WriteLine($"Imagen1: {imagen1?.ImagenNombre}");
             Console.WriteLine($"Imagen2: {imagen2?.ImagenNombre}");
@@ -82,21 +97,35 @@ namespace BadServer.DataBase
             Console.WriteLine($"Imagen10: {imagen10?.ImagenNombre}");
             Console.WriteLine($"Imagen11: {imagen11?.ImagenNombre}");
             Console.WriteLine($"Imagen12: {imagen12?.ImagenNombre}");
+            Console.WriteLine($"Imagen13: {imagen13?.ImagenNombre}");
+            Console.WriteLine($"Imagen14: {imagen14?.ImagenNombre}");
+            Console.WriteLine($"Imagen15: {imagen15?.ImagenNombre}");
+            Console.WriteLine($"Imagen16: {imagen16?.ImagenNombre}");
+            Console.WriteLine($"Imagen17: {imagen17?.ImagenNombre}");
+            Console.WriteLine($"Imagen18: {imagen18?.ImagenNombre}");
+            Console.WriteLine($"Imagen19: {imagen19?.ImagenNombre}");
 
             Producto[] productos =
             {
-            new Producto() { Cantidad = 10, Nombre = "AIR FORCE BLUE", Descripcion = "Mi espada es una herramienta de justiciaaaaaaaaaa", Precio = 19.99, Imagen = imagen1, Categoria = "Air force" },
-            new Producto() { Cantidad = 5, Nombre = "AIR FORCE CLOUD", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen2, Categoria = "Air force" },
-            new Producto() { Cantidad = 10, Nombre = "AIR FORCE WHITE-OFF", Descripcion = "Mi espada es una herramienta de justiciaaaaaaaaaaaaaa", Precio = 19.99, Imagen = imagen3, Categoria = "Air force" },
-            new Producto() { Cantidad = 5, Nombre = "AIR FORCE VINTAGE", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen4, Categoria = "Air force" },
-            new Producto() { Cantidad = 10, Nombre = "JORDAN 1 BLUE", Descripcion = "Mi espada es una herramienta de justicia", Precio = 19.99, Imagen = imagen5, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 5, Nombre = "JORDAN 1 WHITE-RED", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen6, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 10, Nombre = "JORDAN 1 CLOUD", Descripcion = "Mi espada es una herramienta de justicia", Precio = 19.99, Imagen = imagen7, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 5, Nombre = "JORDAN 1 BROWN", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen8, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 10, Nombre = "JORDAN 1 BLACK LIMBO", Descripcion = "Mi espada es una herramienta de justicia", Precio = 19.99, Imagen = imagen9, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 5, Nombre = "JORDAN 1 PANDA", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen10, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 10, Nombre = "JORDAN 1 RED", Descripcion = "Mi espada es una herramienta de justicia", Precio = 19.99, Imagen = imagen11, Categoria = "Jordan 1" },
-            new Producto() { Cantidad = 5, Nombre = "JORDAN BLOOD", Descripcion = "FIGHT OR BE FORGOTTEN!", Precio = 29.99, Imagen = imagen12, Categoria = "Jordan 1" }
+            new Producto() { Cantidad = 40, Nombre = "AIR FORCE BLUE", Descripcion = "AUR FORCE CLÁSICAS AZULES", Precio = 19.99, Imagen = imagen1, Categoria = "Air force" },
+            new Producto() { Cantidad = 50, Nombre = "AIR FORCE CLOUD", Descripcion = "AIR FORCE CLOUD INSPIRADA EN LOS TONOS AZULADOS DEL CIELO", Precio = 29.99, Imagen = imagen2, Categoria = "Air force" },
+            new Producto() { Cantidad = 100, Nombre = "AIR FORCE WHITE-OFF", Descripcion = "AIR FORCE X WHITE-OFF COLABORACION", Precio = 19.99, Imagen = imagen3, Categoria = "Air force" },
+            new Producto() { Cantidad = 57, Nombre = "AIR FORCE VINTAGE", Descripcion = "AIR FORCE VINTAGE SIGUIENDO EL ESTILO DE LAS JORDAN 1", Precio = 29.99, Imagen = imagen4, Categoria = "Air force" },
+            new Producto() { Cantidad = 108, Nombre = "JORDAN 1 BLUE", Descripcion = "JORDAN BLUE CLÁSICAS", Precio = 19.99, Imagen = imagen5, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 56, Nombre = "JORDAN 1 WHITE-RED", Descripcion = "NO ME DA LA MENTE PARA INVENTAR MÁS DESCRIPCIONES", Precio = 29.99, Imagen = imagen6, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 100, Nombre = "JORDAN 1 CLOUD", Descripcion = "JORDAN CLOUD INSPIRADAS EN LOS COLORES DE LA NATURALEZA", Precio = 19.99, Imagen = imagen7, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 56, Nombre = "JORDAN 1 BROWN", Descripcion = "JORDAN CON ESTILO VINTAGE", Precio = 29.99, Imagen = imagen8, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 100, Nombre = "JORDAN 1 BLACK LIMBO", Descripcion = "UN LIMBO DE COLOR NEGRO EN LAS NUEVAS JORDAN 1", Precio = 19.99, Imagen = imagen9, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 58, Nombre = "JORDAN 1 PANDA", Descripcion = "NO COMEN BAMBU PERO CASI", Precio = 29.99, Imagen = imagen10, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 100, Nombre = "JORDAN 1 RED", Descripcion = "JORDAN 1 MÍTICAS CON UN TOQUE ROJO", Precio = 19.99, Imagen = imagen11, Categoria = "Jordan 1" },
+            new Producto() { Cantidad = 51, Nombre = "ADIDAS BOOM", Descripcion = "CUIDADO CON EL TEMPORIZADOR, VUELA EL EDIFICIO QUE MÁS TE MOLE", Precio = 100.99, Imagen = imagen12, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 50, Nombre = "ADIDAS CAMELLO", Descripcion = "HIRMANO CRUZA LA FRONTERA SIN MIEDO, METE AQUÍ LAS BELLOTAS DE POLEN PAKISTANÍ", Precio = 10.99, Imagen = imagen13, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 50, Nombre = "ADIDAS FRIKI NAVAJA", Descripcion = "ZAPATILLA QUE HACE COUNTER A LA ZAPATILLA NAVAJA, UN GITANO NO ESPERA UNA RESPUESTA ASÍ DE UN FRIKAZO", Precio = 55.99, Imagen = imagen14, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 59, Nombre = "ADIDAS HIRMANO", Descripcion = "CORRE DE LA POLICÍA HIRMANO MÁS RAPIDO, COLABORACIÓN CON MOHAMAD AL BIN RAPIDIHN", Precio = 60.99, Imagen = imagen15, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 56, Nombre = "ADIDAS NAVAJA", Descripcion = "MI ZAPATILLA ES UNA HERRAMIENTA PA ROBAH, NO HAY MEJOR OPCION SI ERES GITANO PREMO", Precio = 20.99, Imagen = imagen16, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 500, Nombre = "ADIDAS RECLAMO", Descripcion = "ADIDAS DESTINADAS A CAZAR, CON UN RECLAMO EN CADA CORDON Y UNO DE RESPUESTO PARA LLAMAR PATOS", Precio = 10.99, Imagen = imagen17, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 50, Nombre = "JORDAN EMAIL X BENITO", Descripcion = "COLABORACIÓN QUE REMEMORA LAS TRES SEMANAS QUE TARDO BENITO EN NO HACER EL EMAIL", Precio = 49.99, Imagen = imagen18, Categoria = "Algeciras" },
+            new Producto() { Cantidad = 50, Nombre = "JORDAN X KENRKI GOD", Descripcion = "ESTAS ZAPATILLAS TE SUBEN DOS TONITOS!", Precio = 12.99, Imagen = imagen19, Categoria = "Algeciras" }
     };
 
             await _dbContext.Productos.AddRangeAsync(productos);
