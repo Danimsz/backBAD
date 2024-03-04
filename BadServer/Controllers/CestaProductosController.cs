@@ -42,6 +42,7 @@ namespace BadServer.Controllers
         [HttpPost("{cestaId}/agregar")]
         public async Task<IActionResult> AgregarProductosCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
         {
+      
             //Comprobamos si el producto existe en la tabla productos
             var productoExists = await _dbContext.Productos.AnyAsync(p => p.ProductoID == agregarProductoDto.ProductoID);
             if (!productoExists)
@@ -52,7 +53,7 @@ namespace BadServer.Controllers
             //obtengo producto
             var producto = await _dbContext.Productos.FirstAsync(p => p.ProductoID == agregarProductoDto.ProductoID);
 
-            if(producto.Cantidad > 0)
+            if(producto.Cantidad >= agregarProductoDto.Cantidad)
             {
                 //obtengo cesta
                 var cestaProducto = await _dbContext.cestaProductos.FirstOrDefaultAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
@@ -81,7 +82,7 @@ namespace BadServer.Controllers
 
                 //guardamos los cambios en la base de datos
                 await _dbContext.SaveChangesAsync();
-                return Ok("El producto se ha agregado correctamente");
+                return Ok(new { message = "El producto se ha agregado correctamente" });
 
             }
             else
@@ -90,25 +91,6 @@ namespace BadServer.Controllers
             }
             
         }
-
-        /*[HttpPut("{cestaId}/actualizar")]
-        public async Task<IActionResult> ActualizarProductoCesta(int cestaId, [FromBody] AgregarProductoDto agregarProductoDto)
-        {
-            //Para ver si esta en la cesta el producto
-            var productoExists = await _dbContext.cestaProductos.AnyAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
-            if (!productoExists)
-            {
-                return BadRequest("El producto no se encuentra en la cesta");
-            }
-
-            //Si esta le cambia la cantidad
-            var cestaProducto = await _dbContext.cestaProductos.FirstAsync(cp => cp.CestaID == cestaId && cp.ProductoID == agregarProductoDto.ProductoID);
-            cestaProducto.Cantidad = agregarProductoDto.Cantidad;
-
-            await _dbContext.SaveChangesAsync();
-
-            return Ok("La cantidad del producto se ha actualizado correctamente");
-        }*/
 
         [HttpDelete("{cestaId}/quitar/{productoId}")]
         public async Task<IActionResult> QuitarProductoCesta(int cestaId, int productoId)
