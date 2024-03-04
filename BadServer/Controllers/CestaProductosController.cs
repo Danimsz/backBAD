@@ -122,6 +122,22 @@ namespace BadServer.Controllers
             return Ok(new { cantidad = cestaProducto.Cantidad });
         }
 
+        [HttpDelete("{cestaId}/limpiar")]
+        public async Task<IActionResult> LimpiarCesta(int cestaId)
+        {
+            // Obtener todos los productos de la cesta
+            var cestaProductos = await _dbContext.cestaProductos
+                .Where(cp => cp.CestaID == cestaId)
+                .ToListAsync();
+
+            // Eliminar los productos de la cesta sin afectar el stock
+            _dbContext.cestaProductos.RemoveRange(cestaProductos);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Cesta limpiada exitosamente");
+        }
     }
-    
 }
+
+    
+   
