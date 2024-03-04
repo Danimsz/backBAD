@@ -85,17 +85,19 @@ namespace BadServer.Controllers
                 return NotFound("No se ha encontrado el producto");
             }
 
+            producto.ProductoID = id;
             producto.Cantidad = detallesProductoDto.Cantidad;
             producto.Nombre = detallesProductoDto.Nombre;
             producto.Descripcion = detallesProductoDto.Descripcion;
             producto.Precio = detallesProductoDto.Precio;
+            producto.ImagenID = detallesProductoDto.ImagenID;
             producto.Imagen.ImagenNombre = detallesProductoDto.ImagenNombre;
             producto.Imagen.ImagenUrl = detallesProductoDto.ImagenUrl;
             producto.Categoria = detallesProductoDto.Categoria;
 
             await _dbContext.SaveChangesAsync();
 
-            return Ok("Producto editado.");
+            return Ok(new { message = "Producto editado." });
         }
 
         [HttpDelete("EliminarProducto{id}")]
@@ -111,7 +113,7 @@ namespace BadServer.Controllers
             _dbContext.Productos.Remove(producto);
             await _dbContext.SaveChangesAsync();
 
-            return Ok("Producto eliminado.");
+            return Ok(new { message = "Producto eliminado." });
         }
 
     }
