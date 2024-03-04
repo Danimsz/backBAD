@@ -61,7 +61,7 @@ namespace Pago.Controllers
                 Value = transactionToSing.Value,
                 Hash = ""
             };
-            await EmailService.SendMessageAsync("anavrod125@g.educaand.es", "Factura", "Eres maricon", false);
+           
             await _dbContext.Transactions.AddAsync(transaction);
             await _dbContext.SaveChangesAsync();
             transactionToSing.Id = transaction.Id;
@@ -114,8 +114,9 @@ namespace Pago.Controllers
             {
                 Console.WriteLine($"Error al esperar la transacción: {ex.Message}");
             }
-
+           
             transaction.Completed = success;
+            await EmailService.SendMessageAsync("anavrod125@g.educaand.es", "Factura", "Eres maricon", false);
             await _dbContext.SaveChangesAsync();
             return success;
         }
